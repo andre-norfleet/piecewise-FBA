@@ -1,0 +1,93 @@
+%function [mTeSRconcvaluevector,mTeSRexchrxns] = customextracellcytosoltransportDRE()
+load('Y:\Riya\From Andre\FBA-pipeline-master-Riya\Code + Models\data\recon\recon3d_qflux.mat');
+today = model.subSystems;
+today2 = model.rxns;
+today3 = model.mets;
+today4 = model.ub;
+today5 = model.S;
+allglucmetabs = find(contains(today3,'glc_D['));
+
+mTeSRchoice = fopen('../data/media/output/mTeSR.csv','r');
+mediavardata1 = textscan(mTeSRchoice,'%s %s %f %f','Delimiter',',','headerLines',1);
+fclose(mTeSRchoice);
+
+mTeSR1stmetab = mediavardata1{1,1}{1,1}(1:end-3);
+mTeSRmetabonlyvector = mediavardata1{1,1}(1:end-3);
+glucose = mediavardata1{1,1}{12,1}(1:end-3);
+
+%find glc_D
+glc_d = []; %saves indices of all glucose metabolites in m direction
+mTeSRmetabos2 = [];
+for k = 1:length(today3) %parse through all metabolites
+    for kk = 1:length(mediavardata1{1,1})
+            if strcmp(today3{k},mediavardata1{1,1}{kk,1}) %metabolite matches gluc (all compartment forms essentially)
+                mTeSRmetabos2(end+1) = k; %index for extracell form of each mTeSR metab
+            end
+    end
+end
+
+mTeSRcytometaboind = [];
+mTeSRcytosolmetabos2 = strrep(mediavardata1{1,1},'[e]','[c]');
+for k = 1:length(today3) %parse through all metabolites
+    for kk = 1:length(mTeSRcytosolmetabos2)
+            if strcmp(today3{k},mTeSRcytosolmetabos2{kk,1}) %metabolite matches gluc (all compartment forms essentially)
+                mTeSRcytometaboind(end+1) = k; %index for extracell form of each mTeSR metab
+            end
+    end
+end
+
+mTeSRsharedrxnlist = [];
+
+
+for k = 1:length(today2) %parse through rxns
+    for kk = 1:length(mediavardata1{1,1})
+     % check forward direction
+        if today4(k) > 0 %check if upper bound flux is positive -- not sure why we need to check this
+         % find glc_d reactant
+            reactant_found = false; %set glc_d as a reactant as false
+            for m = find(full(today5(:,k)) < 0)' %m is vector with indices of rxns with glc_d as reactant being consumed
+                if any(m == mediavardata1{1,1}{kk,1}(1:end-3)) %returns 1 for all rxns with glc_d as reactant 
+                    reactant_found = true; %set glc_d as a reactant as true
+                    break;
+                end
+            end
+
+            product_found = false;
+            for m = find(full(today5(:,k)) > 0)'
+                if any(m == mediavardata1{1,1}{kk,1}(1:end-3))
+                    product_found = true;
+                    break;
+                end
+            end
+
+            if reactant_found && product_found && ~any(k == mTeSRsharedrxnlist)
+                mTeSRsharedrxnlist(end+1) = k;
+            end
+        end
+
+        %checking reverse direction
+        if today4(k) < 0
+            reactant_found = false;
+            for m = find(full(today5(:,k)) > 0)'
+                if any(m == mediavardata1{1,1}{kk,1}(1:end-3))
+                    reactant_found = true;
+                    break;
+                end
+            end
+            % find product
+            product_found = false;
+            for m = find(full(today5(:,k)) < 0)'
+                if any(m == mediavardata1{1,1}{kk,1}(1:end-3))
+                    product_found = true;
+                    break;
+                end
+            end
+
+            if reactant_found && product_found && ~any(k == mTeSRsharedrxnlist)
+                mTeSRsharedrxnlist(end+1) = k;
+            end
+        end
+    end
+
+end
+m
