@@ -1,0 +1,23 @@
+METABOLITE,REACTION,CONCENTRATION [M]
+gly[e],EX_gly[e],0.000399627
+arg_L[e],EX_arg_L[e],0.000398747
+ca2[e],EX_ca2[e],1.80E-03
+chol[e],EX_chol[e],2.86E-05
+Lcystin,EX_lcystin[e],2.01E-04
+his_L[e],EX_his_L[e],2.00E-03
+ile_L[e],EX_ile_L[e],8.02E-04
+leu_L[e],EX_leu_L[e],8.02E-04
+lys_L[e],EX_lys_L[e],7.98E-04
+met_L[e],EX_met_L[e],2.01E-04
+phe_L[e],EX_phe_L[e],4.00E-03
+ser_L[e],EX_ser_L[e],4.00E-03
+thr_L[e],EX_thr_L[e],7.98E-04
+trp_L[e],EX_trp_L[e],7.84E-05
+tyr_L[e],EX_tyr_L[e],3.98E-04
+val_L[e],EX_val_L[e],8.03E-04
+fol[e],EX_fol[e],9.07E-06
+ribflv[e],EX_ribflv[e],1.06E-06
+pydxn[e],EX_pydxn[e],1.94E-05
+thm[e],EX_thm[e],1.19E-05
+lac_L[e],EX_lac_L[e],4.00E-03
+pyr[e],EX_pyr[e],4.00E-03
